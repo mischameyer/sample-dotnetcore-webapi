@@ -1,22 +1,31 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Backend.Entities;
+using Microsoft.EntityFrameworkCore.Internal;
+using NLog;
 
 namespace Backend.Repositories
 {
     public class ValueRepository : IValueRepository
     {
+        private static readonly NLog.ILogger logger = LogManager.GetCurrentClassLogger();
         private readonly ValueDbContext _dbContext;
 
         public ValueRepository(ValueDbContext dbContext)
         {
-            _dbContext = dbContext;
+            logger.Info($"initializing ValueRepository...");
+            _dbContext = dbContext;            
         }
 
-        public Value GetSingle(int id)
+        public Value? GetSingle(int id)
         {
-            return _dbContext.Values.FirstOrDefault(x => x.Id == id);
+            if (_dbContext.Values.Any())
+            {
+                return _dbContext.Values.FirstOrDefault(x => x.Id == id);                
+            }
+
+            return null;
         }
 
         public void Add(Value item)

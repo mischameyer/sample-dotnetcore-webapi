@@ -1,5 +1,6 @@
-using Backend.Entities;
+﻿using Backend.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace Backend.Repositories
 {
@@ -7,7 +8,6 @@ namespace Backend.Repositories
     {
         public ValueDbContext(DbContextOptions<ValueDbContext> options) : base(options)
         {
-
         }
 
         public DbSet<Value> Values { get; set; }

@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using Backend.Dtos;
 using Backend.Entities;
 using Backend.Repositories;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
 {
@@ -16,18 +12,20 @@ namespace backend.Controllers
     public class ValuesController : ControllerBase
     {
 
- private readonly IValueRepository _valueRepository;
+        private readonly IValueRepository _valueRepository;
+        private readonly IMapper _mapper;
 
-        public ValuesController(IValueRepository repository)
+        public ValuesController(IValueRepository repository, IMapper mapper)
         {
             _valueRepository = repository;
+            _mapper = mapper;
         }
 
         [HttpGet(Name = nameof(GetAll))]
         public IActionResult GetAll()
         {
             List<Value> items = _valueRepository.GetAll().ToList();
-            IEnumerable<ValueDto> toReturn = items.Select(x => Mapper.Map<ValueDto>(x));
+            IEnumerable<ValueDto> toReturn = items.Select(x => _mapper.Map<ValueDto>(x));
             return Ok(toReturn);
         }
 
@@ -42,7 +40,7 @@ namespace backend.Controllers
                 return NotFound();
             }
 
-            return Ok(Mapper.Map<ValueDto>(item));
+            return Ok(_mapper.Map<ValueDto>(item));
         }
 
         [HttpPost(Name = nameof(Add))]
@@ -53,19 +51,19 @@ namespace backend.Controllers
                 return BadRequest();
             }
 
-            Value toAdd = Mapper.Map<Value>(valueCreateDto);
+            Value toAdd = _mapper.Map<Value>(valueCreateDto);
 
             _valueRepository.Add(toAdd);
 
             if (!_valueRepository.Save())
             {
-                throw new Exception("Creating an item failed on save.");
+                throw new ArgumentException("Creating an item failed on save.");
             }
 
             Value newItem = _valueRepository.GetSingle(toAdd.Id);
 
             return CreatedAtRoute(nameof(GetSingle), new { id = newItem.Id },
-                Mapper.Map<ValueDto>(newItem));
+                _mapper.Map<ValueDto>(newItem));
         }
 
         [HttpPatch("{id:int}", Name = nameof(PartiallyUpdate))]
@@ -83,8 +81,8 @@ namespace backend.Controllers
                 return NotFound();
             }
 
-            ValueUpdateDto valueUpdateDto = Mapper.Map<ValueUpdateDto>(existingEntity);
-            patchDoc.ApplyTo(valueUpdateDto, ModelState);
+            ValueUpdateDto valueUpdateDto = _mapper.Map<ValueUpdateDto>(existingEntity);
+            patchDoc.ApplyTo(valueUpdateDto);
 
             TryValidateModel(valueUpdateDto);
 
@@ -93,15 +91,15 @@ namespace backend.Controllers
                 return BadRequest(ModelState);
             }
 
-            Mapper.Map(valueUpdateDto, existingEntity);
+            _mapper.Map(valueUpdateDto, existingEntity);
             Value updated = _valueRepository.Update(id, existingEntity);
 
             if (!_valueRepository.Save())
             {
-                throw new Exception("Updating an item failed on save.");
+                throw new ArgumentException("Updating an item failed on save.");
             }
 
-            return Ok(Mapper.Map<ValueDto>(updated));
+            return Ok(_mapper.Map<ValueDto>(updated));
         }
 
         [HttpDelete]
@@ -119,7 +117,7 @@ namespace backend.Controllers
 
             if (!_valueRepository.Save())
             {
-                throw new Exception("Deleting an item failed on save.");
+                throw new ArgumentException("Deleting an item failed on save.");
             }
 
             return NoContent();
@@ -146,16 +144,16 @@ namespace backend.Controllers
                 return BadRequest(ModelState);
             }
 
-            Mapper.Map(updateDto, item);
+            _mapper.Map(updateDto, item);
 
             _valueRepository.Update(id, item);
 
             if (!_valueRepository.Save())
             {
-                throw new Exception("Updating an item failed on save.");
+                throw new ArgumentException("Updating an item failed on save.");
             }
 
-            return Ok(Mapper.Map<ValueDto>(item));
-        }       
+            return Ok(_mapper.Map<ValueDto>(item));
+        }
     }
 }

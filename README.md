@@ -1,5 +1,5 @@
 # sample-dotnetcore-webapi
-A simple example of a new dotnet-core webapi. This sample is based on https://github.com/FabianGosebrink/ASPNETCore-WebAPI-Sample
+A simple example of a dotnet-core webapi. This sample works with an in-memory-database and handels the http-actions GET, POST, PUT, DELETE and PATCH.
 
 # Restore
 dotnet restore
@@ -11,4 +11,5 @@ dotnet build
 dotnet watch run
 
 # Swagger
-https://localhost:5001/swagger/
+http://localhost:5156/swagger/index.html
+
