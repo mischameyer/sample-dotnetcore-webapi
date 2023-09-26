@@ -1,7 +1,4 @@
-﻿
-using System;
-
-namespace Backend.Dtos
+﻿namespace Backend.Dtos
 {
     public class ValueDto
     {

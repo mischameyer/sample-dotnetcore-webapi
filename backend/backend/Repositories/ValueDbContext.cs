@@ -1,6 +1,5 @@
 ﻿using Backend.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 
 namespace Backend.Repositories
 {

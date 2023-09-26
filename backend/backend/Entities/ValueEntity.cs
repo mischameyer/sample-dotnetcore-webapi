@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Backend.Entities
+﻿namespace Backend.Entities
 {
     public class Value
     {

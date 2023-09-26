@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Backend.Entities;
-using Microsoft.EntityFrameworkCore.Internal;
+﻿using Backend.Entities;
 using NLog;
 
 namespace Backend.Repositories
